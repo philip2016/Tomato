@@ -1,0 +1,12 @@
+<resources>
+    <!-- add task screen-->
+    <string name="app_name">My Application</string>
+    <string name="input_theme">Input Theme</string>
+    <string name="input_description">Input Description</string>
+    <string name="button_confirm">Confirm</string>
+    <string name="button_cancel">Cancel</string>
+
+    <!-- history item-->
+    <string name="history_start_time">start time</string>
+    <string name="history_end_time">end time</string>
+</resources>
