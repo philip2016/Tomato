@@ -42,7 +42,7 @@ public class HisotyRecordPage extends Activity {
 
             @Override
             protected List<TomatoTaskModel> doInBackground(Object... objects) {
-                models = DatabaseBuilder.getInstance(HisotyRecordPage.this).getAllTask();
+                models = DatabaseBuilder.getInstance().getAllTask();
                 return models;
             }
 

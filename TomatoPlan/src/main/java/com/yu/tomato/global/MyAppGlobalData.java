@@ -10,7 +10,6 @@ public class MyAppGlobalData {
     private static String MainPageName = "com.yu.tomato";
     public static String ACTION_ADD_TASK = MainPageName + "action_add_task";
     public static String ACTION_DEL_TASK = MainPageName + "action_del_task";
-
     public static Context getContext() {
         return context;
     }
@@ -18,6 +17,9 @@ public class MyAppGlobalData {
     public static void setContext(Context context) {
         MyAppGlobalData.context = context;
     }
+
+
+
 
 
 }

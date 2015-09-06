@@ -1,7 +1,6 @@
 package com.yu.tomato.database;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -30,10 +29,10 @@ public class DatabaseBuilder {
     private DataBaseOpenHelper openHelper =  null;
     /**
      * »ñµÃµ¥Àý
-     * @param context
+     * @param
      * @return
      */
-    public static DatabaseBuilder getInstance(Context context){
+    public static DatabaseBuilder getInstance(){
         if(databaseBuilder == null){
             databaseBuilder = new DatabaseBuilder();
         }

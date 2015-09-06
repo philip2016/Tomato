@@ -3,7 +3,7 @@ package com.yu.tomato.model;
 /**
  * Created by YU on 2015/9/4.
  */
-public class TomatoTaskModel {
+public class TomatoTaskModel implements  Comparable {
     // 番茄时钟数量
     private int tomatoCount;
      // 番茄任务主题
@@ -18,6 +18,18 @@ public class TomatoTaskModel {
     private int priority;
     // 番茄任务的状态
     private int state;
+
+    @Override
+    public int compareTo(Object another) {
+        TomatoTaskModel anotherModel = (TomatoTaskModel)another;
+
+        if(another == null) return 0;
+
+        if(anotherModel.getPriority() < priority) return 1;
+        if(anotherModel.getPriority() > priority) return -1;
+
+        return 0;
+    }
 
     public static enum TomatoState{
         Ready,
