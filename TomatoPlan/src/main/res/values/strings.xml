@@ -10,7 +10,7 @@
     <string name="history_end_time">end time</string>
 
     <!--main page-->
-    <string name="main_count_down_timer_text">00:00:00</string>
+    <string name="main_count_down_timer_text">00 : 00 : 00</string>
     <string name="main_theme">Theme:</string>
     <string name="main_status">Status:</string>
     <!--general-->

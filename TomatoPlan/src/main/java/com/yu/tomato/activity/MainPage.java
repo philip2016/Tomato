@@ -1,8 +1,17 @@
 package com.yu.tomato.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,6 +31,11 @@ public class MainPage extends Activity {
     private TextView theme;
     private TextView status;
     private LinearLayout taskLitView;
+    private Button jump;
+    private Button confirm;
+    private BroadcastReceiver br = null;
+    private String TAG = MainPage.class.getCanonicalName().toString();
+    private TimeCount timeCount = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +44,7 @@ public class MainPage extends Activity {
         MyAppGlobalData.setContext(MainPage.this);
         initView();
         initData();
+        onRegist();
     }
 
     /**
@@ -40,6 +55,24 @@ public class MainPage extends Activity {
             theme = (TextView)findViewById(R.id.text_now_task_theme);
             status = (TextView)findViewById(R.id.text_now_task_stutas);
             taskLitView = (LinearLayout)findViewById(R.id.scroll_view_task_list);
+            jump = (Button)findViewById(R.id.button_jump);
+           confirm = (Button)findViewById(R.id.button_start);
+
+        jump.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainPage.this,AddPage.class);
+                startActivity(intent);
+            }
+        });
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timeCount = new TimeCount(10000,1000);
+                timeCount.start();
+            }
+        });
     }
 
     private void initData(){
@@ -57,6 +90,27 @@ public class MainPage extends Activity {
             }
         }.execute();
 
+    }
+
+    /**
+     * 注册监听
+     */
+    private void onRegist(){
+        br = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if(TextUtils.equals(action,MyAppGlobalData.ACTION_ADD_TASK)
+                    ||  TextUtils.equals(action,MyAppGlobalData.ACTION_DEL_TASK)){
+                    initData();
+                }
+            }
+        };
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(MyAppGlobalData.ACTION_ADD_TASK);
+        filter.addAction(MyAppGlobalData.ACTION_DEL_TASK);
+        registerReceiver(br,filter);
     }
 
     @Override
@@ -77,5 +131,63 @@ public class MainPage extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(br != null){
+            unregisterReceiver(br);
+        }
+    }
+
+    /**
+     * 倒计时
+     */
+    class TimeCount extends CountDownTimer{
+        public TimeCount(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long unfinishMillTime) {
+            String time = getTimeFromMill(unfinishMillTime);
+            countDownTimer.setText(time);
+        }
+
+        @Override
+        public void onFinish() {
+
+        }
+
+        /**
+         * 获得倒计时时间
+         * @param millTime
+         * @return
+         */
+        private String getTimeFromMill(long millTime){
+                StringBuffer time = new StringBuffer();
+                long hour  = millTime / (60 * 60 * 1000);
+                long minute = (millTime - hour * 60 * 60 * 1000) / (60 * 1000);
+                long seconds = (millTime  - hour * 60 * 60 * 1000 - minute * 60 * 1000) / 1000;
+
+            time.append(formateTime(hour,true)).append(formateTime(minute,true)).append(formateTime(seconds,false));
+
+            Log.i(TAG, "TIME:" + hour + " : " + minute + " : " + seconds);
+            Log.i(TAG,time.toString());
+            return time.toString();
+
+        }
+
+        /**
+         * 格式化时间  00  01 10
+         * @param time
+         * @return
+         */
+        private String  formateTime(long time,boolean addDot){
+            if(time > 9){
+                return addDot ? String.valueOf(time) + " : " : String.valueOf(time);
+            }
+
+            if(time == 0){
+                return addDot ?  "00 : " : "00";
+            }
+            return addDot ? "0" + String.valueOf(time) + " : " : "0" + String.valueOf(time);
+        }
     }
 }

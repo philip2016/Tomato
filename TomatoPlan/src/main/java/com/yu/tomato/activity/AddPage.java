@@ -80,6 +80,9 @@ public class AddPage extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(br != null){
+            unregisterReceiver(br);
+        }
     }
 
     /**
