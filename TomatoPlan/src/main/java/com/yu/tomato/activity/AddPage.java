@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.yu.tomato.R;
 import com.yu.tomato.database.DatabaseBuilder;
@@ -131,6 +132,8 @@ public class AddPage extends Activity {
 
                     Intent actionIntent = new Intent(MyAppGlobalData.ACTION_ADD_TASK);
                     sendBroadcast(actionIntent);
+
+                    Toast.makeText(AddPage.this,"add complete",Toast.LENGTH_SHORT).show();
 
                     break;
                 case 1:
