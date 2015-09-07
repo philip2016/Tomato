@@ -86,6 +86,7 @@ public class MainPage extends Activity {
             protected void onPostExecute(List<TomatoTaskModel> models) {
                 super.onPostExecute(models);
                TaskManager.models = models;
+                //  任务管理器TaskList update
                 TaskManager.getInstance(MainPage.this).resetTaskListView(taskLitView);
             }
         }.execute();
