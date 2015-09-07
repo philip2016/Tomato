@@ -15,7 +15,7 @@
     <string name="main_status">Status:</string>
     <!--general-->
     <string name="button_confirm">Confirm</string>
-    <string name="button_cancel">Cancel</string>
+    <string name="button_cancel">To History</string>
     <string name="theme">Theme</string>
     <string name="description">Description</string>
 
