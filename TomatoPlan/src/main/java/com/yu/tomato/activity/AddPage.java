@@ -124,10 +124,13 @@ public class AddPage extends Activity {
                     String themeString = theme.getText().toString();
                     String descriptionString = description.getText().toString();
 
-                    Log.i(TAG,"save" + themeString);
+                    Log.i(TAG, "save" + themeString);
 
                     TomatoTaskModel model = new TomatoTaskModel(1,themeString,descriptionString,getNowTime(),0L,0,0);
                     DatabaseBuilder.getInstance().saveNewModel(model);
+
+                    Intent actionIntent = new Intent(MyAppGlobalData.ACTION_ADD_TASK);
+                    sendBroadcast(actionIntent);
 
                     break;
                 case 1:
