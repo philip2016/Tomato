@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,7 +31,8 @@ public class MainPage extends Activity {
     private TextView countDownTimer;
     private TextView theme;
     private TextView status;
-    private LinearLayout taskLitView;
+    private LinearLayout taskListView;
+    private HorizontalScrollView taskListScrollView;
     private Button jump;
     private Button confirm;
     private BroadcastReceiver br = null;
@@ -54,14 +56,15 @@ public class MainPage extends Activity {
             countDownTimer = (TextView)findViewById(R.id.text_timer);
             theme = (TextView)findViewById(R.id.text_now_task_theme);
             status = (TextView)findViewById(R.id.text_now_task_stutas);
-            taskLitView = (LinearLayout)findViewById(R.id.scroll_view_task_list);
+             taskListView = (LinearLayout)findViewById(R.id.linear_view_task_list);
+            taskListScrollView = (HorizontalScrollView)findViewById(R.id.scroll_view_task_list);
             jump = (Button)findViewById(R.id.button_jump);
-           confirm = (Button)findViewById(R.id.button_start);
+            confirm = (Button)findViewById(R.id.button_start);
 
         jump.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainPage.this,AddPage.class);
+                Intent intent = new Intent(MainPage.this, AddPage.class);
                 startActivity(intent);
             }
         });
@@ -69,7 +72,6 @@ public class MainPage extends Activity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timeCount = new TimeCount(10000,1000);
                 timeCount.start();
             }
         });
@@ -85,12 +87,35 @@ public class MainPage extends Activity {
             @Override
             protected void onPostExecute(List<TomatoTaskModel> models) {
                 super.onPostExecute(models);
-               TaskManager.models = models;
+                TaskManager.models = models;
                 //  任务管理器TaskList update
-                TaskManager.getInstance(MainPage.this).resetTaskListView(taskLitView);
+                TaskManager.getInstance(MainPage.this).resetTaskListView(taskListScrollView,taskListView);
+                setNowTaskView();
             }
         }.execute();
 
+    }
+
+    /**
+     * 设置当前task view
+     */
+    private void setNowTaskView(){
+        TomatoTaskModel nowTask = TaskManager.getInstance(MainPage.this).getNowTask();
+        theme.setText(nowTask.getTomatoTheme());
+        timeCount = new TimeCount(nowTask.getNeededTime(),1000);
+
+        switch (nowTask.getState()){
+            case TomatoTaskModel.TASK_STATUS_PROCESSING:
+                status.setText(getResources().getString(R.string.status_processing));
+                confirm.setText(getResources().getString(R.string.status_pause));
+                break;
+            case TomatoTaskModel.TASK_STATUS_PAUSE:
+                status.setText(getResources().getString(R.string.status_pause));
+                confirm.setText(getResources().getString(R.string.status_start));
+                break;
+            default:
+                break;
+        }
     }
 
     /**

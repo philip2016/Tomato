@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DataBaseOpenHelper extends SQLiteOpenHelper {
 
-    private static  int version = 1;
+    private static  int version = 2;
     private static String dbName = "Tomato";
     private static String createTomatoTaskTable = "Create Table if not exists  "  + DatabaseBuilder.TOMATO_TABLE + " (  "
                                                                                         + DatabaseBuilder.TOMATO_TASK_ID + " integer primary key autoincrement,"
@@ -17,6 +17,7 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper {
                                                                                         +DatabaseBuilder.TOMATO_TASK_TOMATO_TIME_COUNT + " int,"
                                                                                         + DatabaseBuilder.TOMATO_TASK_DESCRIPTION + " varchar(60),"
                                                                                         +DatabaseBuilder.TOMATO_TASK_START_TIME + " long,"
+                                                                                        + DatabaseBuilder.TOMATO_TASK_NEED_TIME + " long,"
                                                                                         +DatabaseBuilder.TOMATO_TASK_END_TIME + " long,"
                                                                                         +DatabaseBuilder.TOMATO_TASK__STATUS + " int,"
                                                                                         +DatabaseBuilder.TOMATO_TASK_PRIORITY + " int )";
@@ -41,7 +42,8 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
+        sqLiteDatabase.execSQL("drop table " + DatabaseBuilder.TOMATO_TABLE);
+        sqLiteDatabase.execSQL(createTomatoTaskTable);
     }
 
 

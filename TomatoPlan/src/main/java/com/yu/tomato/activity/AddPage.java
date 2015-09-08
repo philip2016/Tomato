@@ -10,11 +10,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.yu.tomato.R;
-import com.yu.tomato.database.DatabaseBuilder;
 import com.yu.tomato.global.MyAppGlobalData;
+import com.yu.tomato.global.TaskManager;
 import com.yu.tomato.model.TomatoTaskModel;
 
 import java.util.List;
@@ -27,11 +29,16 @@ public class AddPage extends Activity {
 
     private EditText theme;
     private EditText description;
+    private EditText count;
+    private EditText priority;
     private Button confirm;
     private Button cancel;
     private BroadcastReceiver br;
     private List<TomatoTaskModel> models = null;
     private String TAG = AddPage.class.getCanonicalName().toString();
+    private HorizontalScrollView scrollView;
+    private LinearLayout linearLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +55,13 @@ public class AddPage extends Activity {
     private void initView(){
         theme = (EditText)findViewById(R.id.edit_theme);
         description = (EditText)findViewById(R.id.edit_description);
+        count = (EditText)findViewById(R.id.edit_count);
+        priority = (EditText)findViewById(R.id.edit_priority);
         confirm = (Button)findViewById(R.id.button_confirm);
         cancel = (Button)findViewById(R.id.button_cancel);
+
+        scrollView = (HorizontalScrollView)findViewById(R.id.scroll_view_task_list);
+        linearLayout = (LinearLayout)findViewById(R.id.linear_view_task_list);
     }
 
     /**
@@ -104,13 +116,6 @@ public class AddPage extends Activity {
 
     }
 
-    /**
-     *  获得当前时间
-     * @return
-     */
-    public long getNowTime(){
-        return System.currentTimeMillis();
-    }
 
     private class ButtonOnClickListener implements View.OnClickListener{
         private int tag;
@@ -124,11 +129,14 @@ public class AddPage extends Activity {
                     // confirm button
                     String themeString = theme.getText().toString();
                     String descriptionString = description.getText().toString();
-
+                    int tomatoCount = Integer.getInteger(count.getText().toString());
+                    int taskPriority = Integer.getInteger(priority.getText().toString());
+                    long neededTime = tomatoCount * TomatoTaskModel.tomatoTime;
                     Log.i(TAG, "save" + themeString);
 
-                    TomatoTaskModel model = new TomatoTaskModel(1,themeString,descriptionString,getNowTime(),0L,0,0);
-                    DatabaseBuilder.getInstance().saveNewModel(model);
+                    TomatoTaskModel model = new TomatoTaskModel(tomatoCount,themeString,descriptionString,
+                                                                                                                0L,neededTime,0L,taskPriority,TomatoTaskModel.TASK_STATUS_READY);
+                    TaskManager.getInstance(AddPage.this).addNewTask(model,scrollView,linearLayout);
 
                     Intent actionIntent = new Intent(MyAppGlobalData.ACTION_ADD_TASK);
                     sendBroadcast(actionIntent);

@@ -3,8 +3,8 @@
     <string name="app_name">My Application</string>
     <string name="input_theme">Input Theme</string>
     <string name="input_description">Input Description</string>
-
-
+    <string name="input_tomato_count">Input Count Needed</string>
+    <string name="input_task_priority">Input Priority</string>
     <!-- history item-->
     <string name="history_start_time">start time</string>
     <string name="history_end_time">end time</string>
@@ -18,6 +18,15 @@
     <string name="button_cancel">To History</string>
     <string name="theme">Theme</string>
     <string name="description">Description</string>
+
+    <!--task status-->
+    <string name="status_processing">Processing</string>
+    <string name="status_pause">Pause</string>
+    <string name="status_ready">Ready</string>
+    <string name="status_restart">Restart</string>
+    <string name="status_continue">Continue</string>
+    <string name="status_reset">Reset</string>
+    <string name="status_start">Start</string>
 
 
 </resources>

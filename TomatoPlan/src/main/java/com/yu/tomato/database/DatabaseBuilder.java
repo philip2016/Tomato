@@ -21,6 +21,7 @@ public class DatabaseBuilder {
     public static String TOMATO_TASK_DESCRIPTION = "description";
     public static String TOMATO_TASK__STATUS = "status";
     public static String TOMATO_TASK_START_TIME = "start_time";
+    public static String TOMATO_TASK_NEED_TIME = "need_time";
     public static String TOMATO_TASK_END_TIME = "end_time";
     public static String TOMATO_TASK_PRIORITY = "priority";
 
@@ -89,7 +90,7 @@ public class DatabaseBuilder {
         open();
         String[] columns = new String[]{    TOMATO_TASK_ID,TOMATO_TASK_TOMATO_TIME_COUNT,
                                                                     TOMATO_TASK_THEME,TOMATO_TASK_DESCRIPTION,
-                                                                    TOMATO_TASK_START_TIME,TOMATO_TASK_END_TIME,
+                                                                    TOMATO_TASK_START_TIME,TOMATO_TASK_NEED_TIME,TOMATO_TASK_END_TIME,
                                                                     TOMATO_TASK_PRIORITY,TOMATO_TASK__STATUS};
 
         Cursor cursor = db.query(TOMATO_TABLE, columns, null, null, null, null, null, null);
@@ -98,7 +99,7 @@ public class DatabaseBuilder {
             models = new ArrayList<TomatoTaskModel>();
             while (cursor.moveToNext()){
                 TomatoTaskModel model = new TomatoTaskModel(cursor.getInt(1),cursor.getString(2),cursor.getString(3),
-                                                                                                          cursor.getLong(4),cursor.getLong(5),cursor.getInt(6),cursor.getInt(7));
+                                                                                                          cursor.getLong(4),cursor.getLong(5),cursor.getLong(6),cursor.getInt(7),cursor.getInt(8));
                 models.add(model);
             }
         }

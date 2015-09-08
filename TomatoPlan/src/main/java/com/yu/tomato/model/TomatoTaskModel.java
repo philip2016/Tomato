@@ -12,12 +12,20 @@ public class TomatoTaskModel implements  Comparable {
     private String tomatoDescription;
     // 番茄任务开始时间
     private Long tomatoStartTime;
+    // 剩余时间
+    private Long neededTime;
     // 番茄任务结束时间
     private Long tomatoEndTime;
     // 番茄任务优先级
     private int priority;
     // 番茄任务的状态
     private int state;
+
+    public final static int TASK_STATUS_READY = 0;
+    public final static int TASK_STATUS_PROCESSING = 1;
+    public final static int TASK_STATUS_END = 2;
+    public final static int TASK_STATUS_PAUSE = 3;
+    public static long tomatoTime;
 
     @Override
     public int compareTo(Object another) {
@@ -37,12 +45,12 @@ public class TomatoTaskModel implements  Comparable {
         End,
     }
 
-
-    public TomatoTaskModel(int tomatoCount, String tomatoTheme, String tomatoDescription, Long tomatoStartTime, Long tomatoEndTime, int priority, int state) {
+    public TomatoTaskModel(int tomatoCount, String tomatoTheme, String tomatoDescription, Long tomatoStartTime, Long neededTime, Long tomatoEndTime, int priority, int state) {
         this.tomatoCount = tomatoCount;
         this.tomatoTheme = tomatoTheme;
         this.tomatoDescription = tomatoDescription;
         this.tomatoStartTime = tomatoStartTime;
+        this.neededTime = neededTime;
         this.tomatoEndTime = tomatoEndTime;
         this.priority = priority;
         this.state = state;
@@ -102,5 +110,21 @@ public class TomatoTaskModel implements  Comparable {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public Long getNeededTime() {
+        return neededTime;
+    }
+
+    public void setNeededTime(Long neededTime) {
+        this.neededTime = neededTime;
+    }
+
+    public static long getTomatoTime() {
+        return tomatoTime;
+    }
+
+    public static void setTomatoTime(long tomatoTime) {
+        TomatoTaskModel.tomatoTime = tomatoTime;
     }
 }
