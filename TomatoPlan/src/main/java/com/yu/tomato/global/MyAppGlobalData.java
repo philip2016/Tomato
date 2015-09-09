@@ -2,6 +2,8 @@ package com.yu.tomato.global;
 
 import android.content.Context;
 
+import com.yu.tomato.model.ConfigInfo;
+
 /**
  * Created by YU on 2015/9/4.
  */
@@ -13,6 +15,7 @@ public class MyAppGlobalData {
     public static Context getContext() {
         return context;
     }
+    public static ConfigInfo configInfo;
 
     public static void setContext(Context context) {
         MyAppGlobalData.context = context;

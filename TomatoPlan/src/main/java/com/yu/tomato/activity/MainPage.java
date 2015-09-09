@@ -21,6 +21,7 @@ import com.yu.tomato.database.DatabaseBuilder;
 import com.yu.tomato.global.MyAppGlobalData;
 import com.yu.tomato.global.TaskManager;
 import com.yu.tomato.model.TomatoTaskModel;
+import com.yu.tomato.util.CommonUtils;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class MainPage extends Activity {
             countDownTimer = (TextView)findViewById(R.id.text_timer);
             theme = (TextView)findViewById(R.id.text_now_task_theme);
             status = (TextView)findViewById(R.id.text_now_task_stutas);
-             taskListView = (LinearLayout)findViewById(R.id.linear_view_task_list);
+           taskListView = (LinearLayout)findViewById(R.id.linear_view_task_list);
             taskListScrollView = (HorizontalScrollView)findViewById(R.id.scroll_view_task_list);
             jump = (Button)findViewById(R.id.button_jump);
             confirm = (Button)findViewById(R.id.button_start);
@@ -91,6 +92,8 @@ public class MainPage extends Activity {
                 //  任务管理器TaskList update
                 TaskManager.getInstance(MainPage.this).resetTaskListView(taskListScrollView,taskListView);
                 setNowTaskView();
+
+                MyAppGlobalData.configInfo = CommonUtils.getInstance(MainPage.this).getConfigInfo();
             }
         }.execute();
 
@@ -101,6 +104,10 @@ public class MainPage extends Activity {
      */
     private void setNowTaskView(){
         TomatoTaskModel nowTask = TaskManager.getInstance(MainPage.this).getNowTask();
+
+        if(nowTask == null)
+            return;
+
         theme.setText(nowTask.getTomatoTheme());
         timeCount = new TimeCount(nowTask.getNeededTime(),1000);
 
@@ -142,6 +149,8 @@ public class MainPage extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        setNowTaskView();
     }
 
     @Override

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/content_padding_left"
+    android:paddingRight="@dimen/content_padding_right">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/content_space_big"
+        android:gravity="center_vertical"
+        android:id="@+id/config_time">
+    <TextView
+        android:layout_width="@dimen/text_config"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/text_size"
+        android:gravity="center_vertical"
+        android:id="@+id/text_config_time"
+        android:text="@string/text_tomato_time"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/text_config_time"
+        android:id="@+id/config_edit_tomato_time"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/content_space_big"
+            android:gravity="center_vertical"
+            android:layout_below="@+id/config_time"
+            android:id="@+id/config_relax_time">
+            <TextView
+                android:layout_width="@dimen/text_config"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/text_size"
+                android:gravity="center_vertical"
+                android:id="@+id/text_config_relax_time"
+                android:text="@string/text_tomato_relax_time"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/text_config_relax_time"
+                android:id="@+id/config_edit_relax_time"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_confirm"
+        android:layout_below="@+id/config_relax_time"
+        android:id="@+id/button_confirm"/>
+</RelativeLayout>

@@ -4,6 +4,8 @@ package com.yu.tomato.model;
  * Created by YU on 2015/9/4.
  */
 public class TomatoTaskModel implements  Comparable {
+    // 番茄任务的ID
+    private String tomatoID;
     // 番茄时钟数量
     private int tomatoCount;
      // 番茄任务主题
@@ -45,7 +47,8 @@ public class TomatoTaskModel implements  Comparable {
         End,
     }
 
-    public TomatoTaskModel(int tomatoCount, String tomatoTheme, String tomatoDescription, Long tomatoStartTime, Long neededTime, Long tomatoEndTime, int priority, int state) {
+    public TomatoTaskModel(String tomatoID, int tomatoCount, String tomatoTheme, String tomatoDescription, Long tomatoStartTime, Long neededTime, Long tomatoEndTime, int priority, int state) {
+        this.tomatoID = tomatoID;
         this.tomatoCount = tomatoCount;
         this.tomatoTheme = tomatoTheme;
         this.tomatoDescription = tomatoDescription;
@@ -126,5 +129,13 @@ public class TomatoTaskModel implements  Comparable {
 
     public static void setTomatoTime(long tomatoTime) {
         TomatoTaskModel.tomatoTime = tomatoTime;
+    }
+
+    public String getTomatoID() {
+        return tomatoID;
+    }
+
+    public void setTomatoID(String tomatoID) {
+        this.tomatoID = tomatoID;
     }
 }

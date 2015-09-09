@@ -28,5 +28,9 @@
     <string name="status_reset">Reset</string>
     <string name="status_start">Start</string>
 
+    <!--config-->
+    <string name="text_tomato_time">TomatoTime(min):</string>
+    <string name="text_tomato_relax_time">Relax Time(min):</string>
+
 
 </resources>

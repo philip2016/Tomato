@@ -9,10 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DataBaseOpenHelper extends SQLiteOpenHelper {
 
-    private static  int version = 2;
+    private static  int version = 4;
     private static String dbName = "Tomato";
     private static String createTomatoTaskTable = "Create Table if not exists  "  + DatabaseBuilder.TOMATO_TABLE + " (  "
-                                                                                        + DatabaseBuilder.TOMATO_TASK_ID + " integer primary key autoincrement,"
+                                                                                        + DatabaseBuilder.TOMATO_TASK_ID + " varchar(32),"
                                                                                         + DatabaseBuilder.TOMATO_TASK_THEME + " varchar(32),"
                                                                                         +DatabaseBuilder.TOMATO_TASK_TOMATO_TIME_COUNT + " int,"
                                                                                         + DatabaseBuilder.TOMATO_TASK_DESCRIPTION + " varchar(60),"

@@ -61,6 +61,7 @@ public class DatabaseBuilder {
 
     public  long  insert(TomatoTaskModel model){
         ContentValues cv = new ContentValues();
+        cv.put(TOMATO_TASK_ID,model.getTomatoID());
         cv.put(TOMATO_TASK_THEME,model.getTomatoTheme());
         cv.put(TOMATO_TASK_DESCRIPTION,model.getTomatoDescription());
         cv.put(TOMATO_TASK_START_TIME,model.getTomatoStartTime());
@@ -98,7 +99,7 @@ public class DatabaseBuilder {
         if(cursor != null){
             models = new ArrayList<TomatoTaskModel>();
             while (cursor.moveToNext()){
-                TomatoTaskModel model = new TomatoTaskModel(cursor.getInt(1),cursor.getString(2),cursor.getString(3),
+                TomatoTaskModel model = new TomatoTaskModel(cursor.getString(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3),
                                                                                                           cursor.getLong(4),cursor.getLong(5),cursor.getLong(6),cursor.getInt(7),cursor.getInt(8));
                 models.add(model);
             }

@@ -10,6 +10,7 @@ import com.yu.tomato.model.TomatoTaskModel;
 import com.yu.tomato.util.CommonUtils;
 import com.yu.tomato.view.TaskItemView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class TaskManager {
     public static List<TomatoTaskModel> models = null;
     private static TaskManager taskManager;
     private static LinkedList<TomatoTaskModel> taskQueue = null;
-    private static TomatoTaskModel nowTask;
+    private  TomatoTaskModel nowTask;
     private static Context context= null;
     private static int[] phoneSize;
     private static String TAG = TaskManager.class.getCanonicalName().toString();
@@ -34,6 +35,7 @@ public class TaskManager {
     public static TaskManager getInstance(Context newContext){
         if(taskManager == null){
             taskManager =  new TaskManager();
+            models  = new ArrayList<TomatoTaskModel>();
             taskQueue = new LinkedList<TomatoTaskModel>();
         }
         context = newContext;
@@ -47,18 +49,25 @@ public class TaskManager {
      * @param taskListView
      */
     public synchronized void resetTaskListView(HorizontalScrollView scrollView,LinearLayout taskListView){
+        if(models == null || models.isEmpty())
+            return;
        // 移除之前所有子view
         taskListView.removeAllViews();
         // 对现有task按照优先级排序
         Collections.sort(models);
+        taskQueue.clear();
         // 重置当前任务队列和视图
         for(TomatoTaskModel model:models){
             taskQueue.add(model);
             TaskItemView itemView = new TaskItemView(context,model);
+            // 每个子view设置一个tag view =》task
+            itemView.setTag(model);
             taskListView.addView(itemView);
         }
 
-        int moveTo = taskListView.getChildAt(taskListView.getChildCount()-1).getRight();
+        int moveTo = 0;
+        if(taskListView.getChildCount() > 0)
+                moveTo = taskListView.getChildAt(taskListView.getChildCount()-1).getRight();
 
         Log.i(TAG, "move to " + moveTo);
         if(moveTo > phoneSize[0]){
@@ -103,11 +112,17 @@ public class TaskManager {
      * @return
      */
     public TomatoTaskModel getNowTask(){
+        nowTask  = null;
         for(TomatoTaskModel model : models){
             if(model.getState() == TomatoTaskModel.TASK_STATUS_PROCESSING){
-                return model;
+                nowTask =  model;
+               return nowTask;
             }
         }
+        // 如果没有处于正在运行中的任务，取当前任务队列中的第一个
+        // 因为任务队列经过排序，所有first为优先级最高的
+        if(taskQueue.isEmpty())
+            return nowTask;
 
         return taskQueue.getFirst();
     }

@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,9 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.yu.tomato.R;
+import com.yu.tomato.database.DatabaseBuilder;
 import com.yu.tomato.global.MyAppGlobalData;
 import com.yu.tomato.global.TaskManager;
 import com.yu.tomato.model.TomatoTaskModel;
+import com.yu.tomato.util.CommonUtils;
 
 import java.util.List;
 
@@ -34,7 +37,6 @@ public class AddPage extends Activity {
     private Button confirm;
     private Button cancel;
     private BroadcastReceiver br;
-    private List<TomatoTaskModel> models = null;
     private String TAG = AddPage.class.getCanonicalName().toString();
     private HorizontalScrollView scrollView;
     private LinearLayout linearLayout;
@@ -46,6 +48,7 @@ public class AddPage extends Activity {
         MyAppGlobalData.setContext(AddPage.this);
         initView();
         initListener();
+        setTaskListView();
     }
 
 
@@ -62,6 +65,30 @@ public class AddPage extends Activity {
 
         scrollView = (HorizontalScrollView)findViewById(R.id.scroll_view_task_list);
         linearLayout = (LinearLayout)findViewById(R.id.linear_view_task_list);
+    }
+
+    /**
+     *  初始化listview
+     */
+    private void setTaskListView(){
+        if(TaskManager.models == null || TaskManager.models.isEmpty()){
+            new AsyncTask<Object,Object,List<TomatoTaskModel>>(){
+                @Override
+                protected void onPostExecute(List<TomatoTaskModel> models) {
+                    super.onPostExecute(models);
+                    TaskManager.models = models;
+                }
+
+                @Override
+                protected List<TomatoTaskModel> doInBackground(Object... objects) {
+                    return DatabaseBuilder.getInstance().getAllTask();
+                }
+            }.execute();
+
+            TaskManager.getInstance(AddPage.this).resetTaskListView(scrollView,linearLayout);
+        }
+
+
     }
 
     /**
@@ -127,17 +154,23 @@ public class AddPage extends Activity {
             switch (tag){
                 case 0:
                     // confirm button
+                    // 数据
                     String themeString = theme.getText().toString();
                     String descriptionString = description.getText().toString();
-                    int tomatoCount = Integer.getInteger(count.getText().toString());
-                    int taskPriority = Integer.getInteger(priority.getText().toString());
+                    int tomatoCount = Integer.parseInt(count.getText().toString());
+                    int taskPriority = Integer.parseInt(priority.getText().toString());
                     long neededTime = tomatoCount * TomatoTaskModel.tomatoTime;
+                    String ID = String.valueOf(CommonUtils.getInstance(AddPage.this).getNowTime());
+
+
                     Log.i(TAG, "save" + themeString);
 
-                    TomatoTaskModel model = new TomatoTaskModel(tomatoCount,themeString,descriptionString,
+                    TomatoTaskModel model = new TomatoTaskModel(ID,tomatoCount,themeString,descriptionString,
                                                                                                                 0L,neededTime,0L,taskPriority,TomatoTaskModel.TASK_STATUS_READY);
+                    // 由任务管理器完成相关数据的改变和视图的改变
                     TaskManager.getInstance(AddPage.this).addNewTask(model,scrollView,linearLayout);
 
+                    // 发送广播 相关界面更改
                     Intent actionIntent = new Intent(MyAppGlobalData.ACTION_ADD_TASK);
                     sendBroadcast(actionIntent);
 
