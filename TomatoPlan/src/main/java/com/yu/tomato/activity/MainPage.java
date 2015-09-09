@@ -183,6 +183,7 @@ public class MainPage extends Activity {
         public void onTick(long unfinishMillTime) {
             String time = getTimeFromMill(unfinishMillTime);
             countDownTimer.setText(time);
+
         }
 
         @Override
