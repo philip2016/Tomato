@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -20,8 +19,10 @@ import com.yu.tomato.R;
 import com.yu.tomato.database.DatabaseBuilder;
 import com.yu.tomato.global.MyAppGlobalData;
 import com.yu.tomato.global.TaskManager;
+import com.yu.tomato.model.ConfigInfo;
 import com.yu.tomato.model.TomatoTaskModel;
 import com.yu.tomato.util.CommonUtils;
+import com.yu.tomato.util.SelfTimeCount;
 
 import java.util.List;
 
@@ -38,13 +39,16 @@ public class MainPage extends Activity {
     private Button confirm;
     private BroadcastReceiver br = null;
     private String TAG = MainPage.class.getCanonicalName().toString();
-    private TimeCount timeCount = null;
+    private SelfTimeCount timeCount = null;
+
+    private TomatoTaskModel nowTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.screen_main_page);
         MyAppGlobalData.setContext(MainPage.this);
+        CommonUtils.getInstance(MainPage.this).setConfigInfo(new ConfigInfo(10,10));
         initView();
         initData();
         onRegist();
@@ -73,7 +77,18 @@ public class MainPage extends Activity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timeCount.start();
+                Log.i(TAG, "start");
+                if(nowTask.getState() == TomatoTaskModel.TASK_STATUS_READY) {
+                           timeCount.start();
+                            confirm.setText("pause");
+                            nowTask.setState(TomatoTaskModel.TASK_STATUS_PROCESSING);
+                }else{
+                    confirm.setText("start");
+                    nowTask.setNeededTime(timeCount.getNeedTime());
+                    timeCount.cancel();
+                    nowTask.setState(TomatoTaskModel.TASK_STATUS_READY);
+                    TaskManager.getInstance(MainPage.this).updateTask(nowTask);
+                }
             }
         });
     }
@@ -103,13 +118,32 @@ public class MainPage extends Activity {
      * 设置当前task view
      */
     private void setNowTaskView(){
-        TomatoTaskModel nowTask = TaskManager.getInstance(MainPage.this).getNowTask();
+         nowTask = TaskManager.getInstance(MainPage.this).getNowTask();
 
         if(nowTask == null)
             return;
 
         theme.setText(nowTask.getTomatoTheme());
-        timeCount = new TimeCount(nowTask.getNeededTime(),1000);
+        timeCount = new SelfTimeCount(nowTask.getNeededTime(),1000);
+        timeCount.setCallback(new SelfTimeCount.CallBack() {
+            @Override
+            public void onTick(String nowTime) {
+                countDownTimer.setText(nowTime);
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+
+            @Override
+            public void onPause() {
+
+            }
+        });
+        countDownTimer.setText(SelfTimeCount.getTimeFromMill(nowTask.getNeededTime()));
+
+        Log.i(TAG, "" + nowTask.getNeededTime());
 
         switch (nowTask.getState()){
             case TomatoTaskModel.TASK_STATUS_PROCESSING:
@@ -119,6 +153,10 @@ public class MainPage extends Activity {
             case TomatoTaskModel.TASK_STATUS_PAUSE:
                 status.setText(getResources().getString(R.string.status_pause));
                 confirm.setText(getResources().getString(R.string.status_start));
+                break;
+            case TomatoTaskModel.TASK_STATUS_READY:
+                status.setText("Ready");
+                confirm.setText("Start");
                 break;
             default:
                 break;
@@ -143,7 +181,7 @@ public class MainPage extends Activity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(MyAppGlobalData.ACTION_ADD_TASK);
         filter.addAction(MyAppGlobalData.ACTION_DEL_TASK);
-        registerReceiver(br,filter);
+        registerReceiver(br, filter);
     }
 
     @Override
@@ -171,59 +209,4 @@ public class MainPage extends Activity {
         }
     }
 
-    /**
-     * 倒计时
-     */
-    class TimeCount extends CountDownTimer{
-        public TimeCount(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        @Override
-        public void onTick(long unfinishMillTime) {
-            String time = getTimeFromMill(unfinishMillTime);
-            countDownTimer.setText(time);
-
-        }
-
-        @Override
-        public void onFinish() {
-
-        }
-
-        /**
-         * 获得倒计时时间
-         * @param millTime
-         * @return
-         */
-        private String getTimeFromMill(long millTime){
-                StringBuffer time = new StringBuffer();
-                long hour  = millTime / (60 * 60 * 1000);
-                long minute = (millTime - hour * 60 * 60 * 1000) / (60 * 1000);
-                long seconds = (millTime  - hour * 60 * 60 * 1000 - minute * 60 * 1000) / 1000;
-
-            time.append(formateTime(hour,true)).append(formateTime(minute,true)).append(formateTime(seconds,false));
-
-            Log.i(TAG, "TIME:" + hour + " : " + minute + " : " + seconds);
-            Log.i(TAG,time.toString());
-            return time.toString();
-
-        }
-
-        /**
-         * 格式化时间  00  01 10
-         * @param time
-         * @return
-         */
-        private String  formateTime(long time,boolean addDot){
-            if(time > 9){
-                return addDot ? String.valueOf(time) + " : " : String.valueOf(time);
-            }
-
-            if(time == 0){
-                return addDot ?  "00 : " : "00";
-            }
-            return addDot ? "0" + String.valueOf(time) + " : " : "0" + String.valueOf(time);
-        }
-    }
 }

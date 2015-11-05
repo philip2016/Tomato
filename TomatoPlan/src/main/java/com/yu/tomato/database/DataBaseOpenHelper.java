@@ -16,9 +16,9 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper {
                                                                                         + DatabaseBuilder.TOMATO_TASK_THEME + " varchar(32),"
                                                                                         +DatabaseBuilder.TOMATO_TASK_TOMATO_TIME_COUNT + " int,"
                                                                                         + DatabaseBuilder.TOMATO_TASK_DESCRIPTION + " varchar(60),"
-                                                                                        +DatabaseBuilder.TOMATO_TASK_START_TIME + " long,"
-                                                                                        + DatabaseBuilder.TOMATO_TASK_NEED_TIME + " long,"
-                                                                                        +DatabaseBuilder.TOMATO_TASK_END_TIME + " long,"
+                                                                                        +DatabaseBuilder.TOMATO_TASK_START_TIME + " varchar(15),"
+                                                                                        + DatabaseBuilder.TOMATO_TASK_NEED_TIME + " varchar(15),"
+                                                                                        +DatabaseBuilder.TOMATO_TASK_END_TIME + " varchar(15),"
                                                                                         +DatabaseBuilder.TOMATO_TASK__STATUS + " int,"
                                                                                         +DatabaseBuilder.TOMATO_TASK_PRIORITY + " int )";
 

@@ -3,6 +3,7 @@ package com.yu.tomato.database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.yu.tomato.global.MyAppGlobalData;
 import com.yu.tomato.model.TomatoTaskModel;
@@ -28,6 +29,8 @@ public class DatabaseBuilder {
     private static DatabaseBuilder databaseBuilder = null;
     private SQLiteDatabase db = null;
     private DataBaseOpenHelper openHelper =  null;
+
+    private static String TAG = DatabaseBuilder.class.getCanonicalName().toString();
     /**
      * 获得单例
      * @param
@@ -65,10 +68,11 @@ public class DatabaseBuilder {
         cv.put(TOMATO_TASK_THEME,model.getTomatoTheme());
         cv.put(TOMATO_TASK_DESCRIPTION,model.getTomatoDescription());
         cv.put(TOMATO_TASK_START_TIME,model.getTomatoStartTime());
+        cv.put(TOMATO_TASK_NEED_TIME,model.getNeededTime());
         cv.put(TOMATO_TASK_END_TIME,model.getTomatoEndTime());
         cv.put(TOMATO_TASK_TOMATO_TIME_COUNT,model.getTomatoCount());
         cv.put(TOMATO_TASK__STATUS,model.getState());
-        cv.put(TOMATO_TASK_PRIORITY,model.getPriority());
+        cv.put(TOMATO_TASK_PRIORITY, model.getPriority());
 
         return db.insert(TOMATO_TABLE,null,cv);
     }
@@ -80,6 +84,21 @@ public class DatabaseBuilder {
     public void saveNewModel(TomatoTaskModel model){
         open();
         insert(model);
+        close();
+    }
+
+    /**
+     * 更新任务
+     * @param model
+     */
+    public void updateModel(TomatoTaskModel model){
+        open();
+        String selections = TOMATO_TASK_ID + " = ?";
+        String[] selectionArgs = new String[]{model.getTomatoID()};
+
+        ContentValues cv = new ContentValues();
+        cv.put(TOMATO_TASK_NEED_TIME,model.getNeededTime());
+        db.update(TOMATO_TABLE,cv,selections,selectionArgs);
         close();
     }
 
@@ -101,6 +120,8 @@ public class DatabaseBuilder {
             while (cursor.moveToNext()){
                 TomatoTaskModel model = new TomatoTaskModel(cursor.getString(0),cursor.getInt(1),cursor.getString(2),cursor.getString(3),
                                                                                                           cursor.getLong(4),cursor.getLong(5),cursor.getLong(6),cursor.getInt(7),cursor.getInt(8));
+
+                Log.i(TAG,cursor.getLong(5)+"");
                 models.add(model);
             }
         }

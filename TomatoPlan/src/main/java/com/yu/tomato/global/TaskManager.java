@@ -108,6 +108,15 @@ public class TaskManager {
     }
 
     /**
+     * 更新任务
+     * @param model
+     */
+    public synchronized void updateTask(TomatoTaskModel model){
+        if(model == null) return;
+        DatabaseBuilder.getInstance().updateModel(model);
+    }
+
+    /**
      * 获取当前task，正在处理中的task 或者优先级最高的task
      * @return
      */
@@ -123,6 +132,11 @@ public class TaskManager {
         // 因为任务队列经过排序，所有first为优先级最高的
         if(taskQueue.isEmpty())
             return nowTask;
+
+        Log.i(TAG,taskQueue.getFirst().getTomatoID());
+        Log.i(TAG,taskQueue.getFirst().getTomatoTheme());
+        Log.i(TAG,taskQueue.getFirst().getNeededTime()+"");
+
 
         return taskQueue.getFirst();
     }
